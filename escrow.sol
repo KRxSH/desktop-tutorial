@@ -1,28 +1,28 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.5.0;
 contract Escrow {
     uint public contract_actv_time;
     uint public dispute_time;
-    address public buyer;
-    address public seller;
-    address public escrow;
     uint public amount;
     uint public escrow_fee;
+    address payable public buyer;
+    address payable public seller;
+    address payable public escrow;
     bool public actv_seller = false;
     bool public actv_buyer = false;
     bool public contract_actv = false;
     bool public dispute_raised = false;
     bool public contract_settled = false;
     
-    function Escrow (
-        address _buyer, 
-        address _seller, 
-        address _escrow,
+    constructor (
+        address payable _buyer, 
+        address payable _seller, 
+        address payable _escrow,
         uint _amount, 
         uint _escrow_fee,
         uint _dispute_time
         ) public {
-            seller = _seller;
             buyer = _buyer;
+            seller = _seller;
             escrow = _escrow;
             amount = _amount;
             escrow_fee = _escrow_fee;
@@ -111,7 +111,7 @@ contract Escrow {
     }
     
     function pay_to_seller() public {
-        require(msg.sender == escrow && dispute_raised ==true);
+        require(msg.sender == escrow && dispute_raised == true);
         escrow.transfer(escrow_fee);
         uint amount_to_seller = escrow_fee + amount;
         seller.transfer(amount_to_seller);
@@ -119,7 +119,7 @@ contract Escrow {
     }
     
     function pay_to_buyer() public {
-        require(msg.sender == escrow && dispute_raised ==true);
+        require(msg.sender == escrow && dispute_raised == true);
         escrow.transfer(escrow_fee);
         uint amount_to_buyer = escrow_fee + amount;
         buyer.transfer(amount_to_buyer);
